@@ -45,6 +45,11 @@ class MainActivity : AppCompatActivity() {
 
                     override fun onItemClick(view: View, position: Int) {
                         //Recuperar tarefa para edição
+                        val tarefaSelecionada: Tarefa = listaTarefas[position]
+                        // Enviar tarefa para a tela adicionar tarefas
+                        val intent = Intent(applicationContext, AddTaskActivity::class.java)
+                        intent.putExtra("tarefaSelecionada", tarefaSelecionada)
+                        startActivity(intent)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -54,15 +59,15 @@ class MainActivity : AppCompatActivity() {
         )
 
 
-        fab.setOnClickListener { view ->
-            val intent = Intent(applicationContext, AddTaskActivity::class.java)
+        fab.setOnClickListener {
+            val intent = Intent(this, AddTaskActivity::class.java)
             startActivity(intent)
         }
     }
 
     fun carregarListaTarefas(): Unit {
         //Listar tarefas
-       val taskDAO = TaskDAO(applicationContext)
+        val taskDAO = TaskDAO(applicationContext)
         listaTarefas = taskDAO.listar()
 
 

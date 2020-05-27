@@ -34,7 +34,18 @@ class TaskDAO(context: Context) : ITaskDAO {
     }
 
     override fun atualizar(tarefa: Tarefa): Boolean {
-        TODO("Not yet implemented")
+        val cv = ContentValues()
+        cv.put("nome", tarefa.nomeTarefa)
+        try {
+            val args = arrayOf(tarefa.id.toString())
+            escrever.update(DbHelper.TABELA_TAREFAS, cv, "id=?", args)
+            Log.i("INFO", "Tarefa atualizada com Sucesso")
+        } catch (e: Exception) {
+            Log.e("INFO", "Erro ao atualizar tarefa" + e.message)
+            return false
+        }
+
+        return true
     }
 
     override fun deletar(tarefa: Tarefa): Boolean {
