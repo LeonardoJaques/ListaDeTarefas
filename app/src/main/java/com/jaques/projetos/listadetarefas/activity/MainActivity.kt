@@ -2,6 +2,7 @@ package com.jaques.projetos.listadetarefas.activity
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var tarefaAdapter: TarefaAdapter
     private var listaTarefas = ArrayList<Tarefa>()
+    private lateinit var taskSelection: Tarefa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +57,34 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
-                        Log.i("clique", "onItemLongClick")
+                        //Recuperar tarefa para deletar
+                        taskSelection = listaTarefas[position]
+                        val dialog: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+                        // Configurar título e mensagem
+                        dialog.setTitle("Confirmar exclusão")
+                        dialog.setMessage("Deseja excluir a tarefa ${taskSelection.nomeTarefa} ?")
+                        dialog.setPositiveButton("Sim") { action, which ->
+                            val taskDao = TaskDAO(applicationContext)
+                            if (taskDao.deletar(taskSelection)) {
+                                carregarListaTarefas()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Sucesso ao excluir tarefa ${taskSelection.nomeTarefa}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Erro ao excluir ${taskSelection.nomeTarefa}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                        dialog.setNegativeButton("Não", null)
+                        //Exibir a dialog
+                        dialog.create().show()
+
+
                     }
                 })
         )
@@ -97,19 +128,4 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 }

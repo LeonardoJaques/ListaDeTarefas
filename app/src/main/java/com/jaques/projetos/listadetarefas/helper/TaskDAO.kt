@@ -18,7 +18,6 @@ class TaskDAO(context: Context) : ITaskDAO {
         ler = db.readableDatabase
     }
 
-
     override fun salvar(tarefa: Tarefa): Boolean {
         val cv = ContentValues()
         cv.put("nome", tarefa.nomeTarefa)
@@ -49,7 +48,17 @@ class TaskDAO(context: Context) : ITaskDAO {
     }
 
     override fun deletar(tarefa: Tarefa): Boolean {
-        TODO("Not yet implemented")
+
+        try {
+            val args = arrayOf(tarefa.id.toString())
+            escrever.delete(DbHelper.TABELA_TAREFAS, "id=?", args)
+            Log.i("INFO", "Tarefa removida com Sucesso")
+        } catch (e: Exception) {
+            Log.e("INFO", "Erro ao remover tarefa" + e.message)
+            return false
+        }
+
+        return true
     }
 
     override fun listar(): ArrayList<Tarefa> {

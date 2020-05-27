@@ -1,11 +1,10 @@
 package com.jaques.projetos.listadetarefas.activity
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.jaques.projetos.listadetarefas.R
 import com.jaques.projetos.listadetarefas.helper.TaskDAO
@@ -25,7 +24,7 @@ class AddTaskActivity : AppCompatActivity() {
         taskCurrent = intent.getSerializableExtra("tarefaSelecionada") as? Tarefa
 
         // Configurar caixa de texto
-        editTask.setText(taskCurrent?.nomeTarefa)
+        if (taskCurrent != null ) {editTask.setText(taskCurrent?.nomeTarefa)}
     }
 
 
